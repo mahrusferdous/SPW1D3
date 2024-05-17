@@ -10,18 +10,14 @@ function DataFetching() {
         error,
     } = useQuery("posts", async () => {
         const response = await axios.get("https://jsonplaceholder.typicode.com/posts");
+        console.log(response.data);
         return response.data;
     });
 
-    //POST
-    //const createPostMutation = useMutation(newPost => createPost(newPost));
-
-    //PUT
-    //const updatePostMutation = useMutation(updatedPost => updatePost(updatedPost));
-
     //DELETE
-    const deletePostMutation = useMutation((postId) => {
-        axios.delete(`https://jsonplaceholder.typicode.com/posts/${postId}`);
+    const deletePostMutation = useMutation(async (postId) => {
+        const response = await axios.delete(`https://jsonplaceholder.typicode.com/posts/${postId}`);
+        console.log(response.data); // getting a 200 https status
     });
 
     if (isLoading) return <div>Loading...</div>;
@@ -31,7 +27,8 @@ function DataFetching() {
         <div>
             {posts.map((post) => (
                 <div key={post.id}>
-                    <p>{post.title}</p>
+                    <h3>{post.title}</h3>
+                    <p>{post.body}</p>
                     <button onClick={() => deletePostMutation.mutate(post.id)}>Delete</button>
                 </div>
             ))}
@@ -39,4 +36,4 @@ function DataFetching() {
     );
 }
 
-export default DataFetching;
+export default React.memo(DataFetching);
